@@ -44,10 +44,23 @@ app.post('/api/register',(req, res) => {
 
     user.save((err, data) => {
         if(err) return res.json({success: false});
-        res.status(200).json({
-            success: true,
-            user: data
+
+        /*Added by Heen*/
+        /*Once a user is created, directly log that user in with the login function. */
+        user.generateToken((err,user) => {
+            if(err) return res.status(400).send(err);
+            res.cookie('auth',user.token).json({
+                isAuth: true,
+                id: user._id,
+                success: true,
+                user: data
+            })
         })
+
+        // res.status(200).json({
+        //     success: true,
+        //     user: data
+        // })
     })
 })
 
@@ -77,7 +90,7 @@ app.get('/api/logout', auth, (req, res) => {
 // Logging out entails deleting user token from the database.
     req.user.deleteToken(req.token, (err, user) => {
         if(err) return res.status(400).send(err);
-        res.sendStatus(200).json({message: "You have logged out successfully!"})
+        res.status(200).json({message: "You have logged out successfully!"})
     })
 })
 
@@ -134,6 +147,16 @@ app.get('/api/books',(req, res) => {
     Book.find().skip(skip).sort({_id:order}).limit(limit).exec((err, data) => {
         if(err) return res.status(400).send(err);
         res.send(data);
+    })
+})
+
+// Getting a books of logged in user
+app.get('/api/my_books', (req, res) => {
+    let userId = req.query.id;
+
+    Book.find({ownerId: userId}, (err, data) => {
+        if(err) return res.status(404).send(err);
+        res.status(200).send(data);
     })
 })
 
