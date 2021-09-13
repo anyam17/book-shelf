@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+# app data files
+/public/books
+/public/images
+
 # testing
 /coverage
 

@@ -42,6 +42,7 @@ class Register extends Component {
         return (
                 <RegisterComponent
                     {...this.state}
+                    {...this.props}
                     handleInput={this.handleInput}
                     submitForm={this.submitForm}
                 />
@@ -51,7 +52,9 @@ class Register extends Component {
 
 function mapStateToProps(state) {
     return {
-        auth: state.auth.auth
+        auth: state.auth.auth,
+        message: state.auth.message,
+        isLoading: state.auth.isLoading,
     }
 }
 

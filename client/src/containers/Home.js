@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 class Home extends React.Component {
 
     componentWillMount() {
-        this.props.dispatch(getBooks(4, 0, 'desc'));
+        this.props.dispatch(getBooks(8, 0, 'desc'));
     }
 
     componentWillUnmount() {
@@ -18,7 +18,7 @@ class Home extends React.Component {
 
     loadMore = () => {
         let numberOfBooks = this.props.books.length;
-        this.props.dispatch(getBooks(4, numberOfBooks, 'desc', this.props.books));
+        this.props.dispatch(getBooks(8, numberOfBooks, 'desc', this.props.books));
     }
 
     renderItems = books => (
@@ -38,7 +38,7 @@ class Home extends React.Component {
             <div>
                 {this.renderItems(this.props.books)}
 
-                {this.props.books && this.props.books.length > 3 ?
+                {this.props.books && this.props.books.length > 7 ?
                 <Button
                     fullWidth
                     variant="contained"

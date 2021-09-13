@@ -30,6 +30,18 @@ const bookSchema = mongoose.Schema({
     ownerId:{
         type: String,
         required: true
+    },
+    file:{
+        type: String,
+        required: true
+    },
+    size:{
+        type: Number,
+        required: true
+    },
+    type:{
+        type: String,
+        required: true
     }
 }, { timestamps: true})
 

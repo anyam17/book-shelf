@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -11,9 +12,14 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import Chip from '@material-ui/core/Chip';
 
+import { Document, Page } from "react-pdf";
+import pdfFile from './unix_tutorial.pdf';
+
 const useStyles = makeStyles({
   root: {
     maxWidth: 300,
+    minWidth: 300,
+    minHeight: 330,
     float: 'left',
     marginLeft: 10,
     marginBottom: 20
@@ -26,6 +32,9 @@ const useStyles = makeStyles({
 const BookItem = (book) => {
     const classes = useStyles();
 
+    const onDocumentLoadSuccess = ({ numPages }) => {
+    };
+
     return (
         <Card className={classes.root}>
           <CardActionArea>
@@ -33,13 +42,21 @@ const BookItem = (book) => {
               className={classes.media}
               image="/static/images/cards/contemplative-reptile.jpg"
               title={book.name}
-            />
+            >
+                <Document
+                  file={pdfFile}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                >
+                  <Page pageNumber={1} height={100} />
+                </Document>
+              
+            </CardMedia>
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
-                {book.name}
+                {_.startCase(book.name)}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                {book.author}
+                {_.startCase(book.author)}
               </Typography>
             </CardContent>
           </CardActionArea>

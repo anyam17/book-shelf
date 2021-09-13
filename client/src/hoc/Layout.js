@@ -151,7 +151,7 @@ const styles = {
   },
   main: {
     flex: 1,
-    padding: theme.spacing(3, 0),
+    // padding: theme.spacing(3, 0),
     background: '#f4f6f8',  //'#eaeff1',
     padding: 10
   },

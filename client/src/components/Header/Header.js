@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
 import { filterData } from '../../actions/filter';
+import _ from 'lodash';
 
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -142,15 +143,21 @@ class Header extends React.Component {
                     </Tooltip>
                   </Grid>
                   <Grid item style={{marginRight: 20}}>
-                    <Link to={`logout`} style={{color:"inherit", textDecoration: 'none'}}><Button className={classes.button} variant="outlined" color="inherit" size="small">
-                      Logout
-                    </Button></Link>
+                    <Link to={`logout`} style={{color:"inherit", textDecoration: 'none'}}>
+                      <Button className={classes.button} variant="outlined" color="inherit" size="small">
+                        Logout
+                      </Button>
+                    </Link>
                   </Grid>
                   <Grid item>
-                    {auth && auth.firstname} 
-                    <Link to={`user`}>
+                    {auth && _.startCase(auth.firstname)} 
+                    <Link to={`user`} style={{color:"inherit", textDecoration: 'none'}}>
                       <IconButton color="inherit" className={classes.iconButtonAvatar}>
-                        <Avatar src="/images/1.jpg" alt="My Avatar" />
+                      {auth.photo ?
+                        <Avatar src={`/images/${auth.photo}`} alt="My Avatar" />
+                      :
+                        <Avatar src={`/account.png`} alt="My Avatar" />
+                      }
                       </IconButton>
                     </Link>
                   </Grid>

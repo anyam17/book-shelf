@@ -1,4 +1,5 @@
 const initialState = {
+    message: null,
     books: [],
 };
 
@@ -16,16 +17,30 @@ export default function(state=initialState, action) {
                 books: action.payload
             }
             
+        case 'ADD_BOOK_REQUEST':
+            return {
+                ...state,
+                isLoading: true
+            }
+
         case 'ADD_BOOK':
             return {
                 ...state,
-                book: action.payload
+                message: action.payload.message,
+                success: action.payload.success,
+                isLoading: false
             }
 
         case 'CLEAR_BOOKS':
             return {
                 ...state,
                 books: action.payload.books
+            }
+
+        case 'DISMISS_NOTIFICATION':
+            return {
+                ...state,
+                message: null
             }
 
         default:

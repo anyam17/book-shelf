@@ -5,7 +5,6 @@ import {
   Box,
   Container,
   Grid,
-  Avatar,
   Button,
   Card,
   CardActions,
@@ -44,12 +43,21 @@ const Account = (props) => (
                       flexDirection: 'column'
                     }}
                   >
+                  {props.photo ?
                     <img
-                      className="rounded-circle"
-                      src={`/images/1.jpg`}
+                      className="rounded"
+                      src={`/images/${props.photo}`}
                       alt={props.firstname}
                       width="110"
                     />
+                    :
+                    <img
+                      className="rounded"
+                      src={`/account.png`}
+                      alt={props.firstname}
+                      width="110"
+                    />
+                  }
                     <Typography
                       color="textPrimary"
                       gutterBottom
@@ -73,10 +81,12 @@ const Account = (props) => (
                 </CardContent>
                 <Divider />
                 <CardActions>
+                  <input type="file" className="form-control" multiple="" onChange={props.handleFile} />
                   <Button
                     color="primary"
                     fullWidth
                     variant="text"
+                    onClick={props.handleUpload}
                   >
                     Upload picture
                   </Button>
