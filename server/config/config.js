@@ -1,6 +1,6 @@
 const config = {
     production: {
-        SECRET: process.env.SECRET,
+        SECRET: process.env.SESSION_SECRET,
         DATABASE: process.env.MONGODB_URI
     },
     default: {
