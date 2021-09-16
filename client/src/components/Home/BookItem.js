@@ -3,9 +3,7 @@ import _ from "lodash";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -41,7 +39,7 @@ const useStyles = makeStyles({
 
 const BookItem = (book) => {
   const classes = useStyles();
-  const { name, author, price, pages, file } = book;
+  const { name, author, pages, file } = book;
 
   const onDocumentLoadSuccess = ({ numPages }) => {};
 
@@ -51,16 +49,13 @@ const BookItem = (book) => {
         title={
           <Typography className={classes.title}>{_.startCase(name)}</Typography>
         }
-        subheader={
-          <span className={classes.title}>{_.startCase(author)}</span>
-        }
+        subheader={<span className={classes.title}>{_.startCase(author)}</span>}
       />
       <CardMedia className={classes.media} image="" title={name}>
         <Document file={`/books/${file}`} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={1} height={210} />
         </Document>
       </CardMedia>
-
       <CardActions className={classes.cardActions}>
         <Chip
           label={`Pages ${" "}${pages}`}

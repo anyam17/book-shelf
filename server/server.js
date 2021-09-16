@@ -25,6 +25,7 @@ const { auth } = require('./middleware/auth');
 /* Middleware Setup. */
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(cookieParser());
+app.use(express.static("client/build"));  // App setting for production.
 
 /**************************************************************/
 /***** ROUTES FOR USER AUTHENTICATION AND AUTHORISATION. ******/
@@ -276,6 +277,14 @@ app.delete('/api/book', (req, res) => {
     })
 })
 
+// App settings for production
+if (process.env.NODE_ENV === "production") {
+    const path = require("path");
+
+    app.get("/*", (req, res) => {
+        res.sendfile(path.resolve(__dirname, "../client", "build", "index.html"))
+    });
+}
 
 const port = process.env.PORT || 4000;
 app.listen(port, function() {

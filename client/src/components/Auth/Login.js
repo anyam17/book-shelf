@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,9 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
-import Notification from '../Feedback/Notification';
-import { Document, Page } from "react-pdf";
-
+import Notification from "../Feedback/Notification";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,7 +35,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = (props) => {
-
   const classes = useStyles();
 
   return (
@@ -93,12 +90,16 @@ const Login = (props) => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link to="#" variant="body2" style={{color:"#009be5"}}>
+              <Link to="#" variant="body2" style={{ color: "#009be5" }}>
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link to={`/register`} variant="body2" style={{color:"#009be5"}}>
+              <Link
+                to={`/register`}
+                variant="body2"
+                style={{ color: "#009be5" }}
+              >
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -106,11 +107,11 @@ const Login = (props) => {
         </form>
       </div>
 
-      {props.success ?
-        <Notification message={props.message} type='success' />
-        :
-        <Notification message={props.message} type='error' />
-      }
+      {props.success ? (
+        <Notification message={props.message} type="success" />
+      ) : (
+        <Notification message={props.message} type="error" />
+      )}
     </Container>
   );
 };
