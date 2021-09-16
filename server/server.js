@@ -227,7 +227,7 @@ app.post('/api/book', (req, res, next) => {
     if (req.body.file) {
         try {
             // to declare some path to store your converted image
-            const path = './client/public/books/' + Date.now() + '.' +req.body.type;
+            const path = './client/public/books/' + Date.now() + '.' + req.body.type;
             const filePath = path.split("s/")[1];
      
             const file = req.body.file;

@@ -1,15 +1,14 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { getBooks, clearBooks } from '../actions/book';
+import React from "react";
+import { connect } from "react-redux";
+import { getBooks, clearBooks } from "../actions/book";
 
-import BookItem from '../components/Home/BookItem';
+import BookItem from "../components/Home/BookItem";
 
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 
 class Home extends React.Component {
-
     componentWillMount() {
-        this.props.dispatch(getBooks(8, 0, 'desc'));
+        this.props.dispatch(getBooks(10, 0, "desc"));
     }
 
     componentWillUnmount() {
@@ -18,45 +17,49 @@ class Home extends React.Component {
 
     loadMore = () => {
         let numberOfBooks = this.props.books.length;
-        this.props.dispatch(getBooks(8, numberOfBooks, 'desc', this.props.books));
-    }
+        this.props.dispatch(
+            getBooks(10, numberOfBooks, "desc", this.props.books)
+        );
+    };
 
-    renderItems = books => (
-        books ?
-            books.map((book, i) => (
-                <BookItem {...book} key={book._id} />
-            ))
-        : null
-    )
+    renderItems = (books) =>
+        books
+            ? books.map((book, i) => <BookItem {...book} key={book._id} />)
+            : null;
 
     render() {
         if (this.props.isEmpty) {
-            return <h1 style={{textAlign: 'center', marginTop: '15%'}}>No Records Found</h1>
+            return (
+                <h1 style={{ textAlign: "center", marginTop: "15%" }}>
+                    No Records Found
+                </h1>
+            );
         }
 
         return (
             <div>
                 {this.renderItems(this.props.books)}
 
-                {this.props.books && this.props.books.length > 7 ?
-                <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    onClick={this.loadMore}
-                >
-                    Load More
-                </Button> : null}
+                {this.props.books && this.props.books.length > 9 ? (
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        onClick={this.loadMore}
+                    >
+                        Load More
+                    </Button>
+                ) : null}
             </div>
-        )
+        );
     }
-};
+}
 
 function mapStateToProps(state) {
     return {
         books: state.filter.books,
         isEmpty: state.filter.isEmpty,
-    }
+    };
 }
 
 export default connect(mapStateToProps)(Home);

@@ -45,10 +45,12 @@ class Account extends Component {
     }
 
     render() {
+        const { photoId, isAuth, ...rest } = this.props.auth;
+        
         return (
             <div>
                 <AccountComponent 
-                    {...this.props.auth} 
+                    {...rest} 
                     {...this.props.user}
                     message={this.props.message}
                     success={this.props.success}

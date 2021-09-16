@@ -18,7 +18,7 @@ export function getBooks(limit = 10, start = 0, order = "asc", list = "") {
     };
 }
 
-export function addBook({
+export function addBook(
     name,
     author,
     ownerId,
@@ -29,7 +29,7 @@ export function addBook({
     file,
     size,
     type,
-}) {
+) {
     const request = axios.post("/api/book", {
         name,
         author,

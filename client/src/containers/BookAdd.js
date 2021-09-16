@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { reset } from "redux-form";
 
 import BookAddComponent from "../components/Book/BookAdd";
 import { addBook } from "../actions/book";
+import { validateForm } from "../utils";
 
 class BookAdd extends Component {
     constructor(props) {
@@ -19,6 +21,8 @@ class BookAdd extends Component {
             file: "",
             size: "",
             type: "",
+            errors: {},
+            fileName: ""
         };
 
         this.initialState = { ...this.state };
@@ -39,31 +43,61 @@ class BookAdd extends Component {
     // Image upload function...
     createImage = (file) => {
         let type = file.type.split("/")[1];
+        let fileName = file.name;
         let reader = new FileReader();
-        reader.onload = (e) => {
-            this.setState({
-                file: e.target.result,
-                size: file.size,
-                type: type
-            });
-        };
-        reader.readAsDataURL(file);
+        let validate = validateForm(file);
+
+        if (validate.isValidForm) {
+            reader.onload = (e) => {
+                this.setState({
+                    file: e.target.result,
+                    size: file.size,
+                    type: type,
+                    fileName: fileName,
+                    isValidForm: true,
+                    errors: {},
+                });
+            };
+
+            reader.readAsDataURL(file);
+        } else this.setState({ errors: validate.errors, isValidForm: validate.isValidForm, fileName });
     };
 
     handleFile = (e) => {
-
         let files = e.target.files || e.dataTransfer.files;
+        
         if (!files.length) return;
         this.createImage(files[0]);
+        
     };
 
-    submitForm = (e) => {
-        e.preventDefault();
+    submitForm = (values) => {
+        const { ownerId, review, rating, file, size, type, isValidForm } = this.state;
+        const { name, author, pages, price } = values;
 
-        this.props.dispatch(addBook(this.state));
+        if (isValidForm) {
+            this.props.dispatch(
+                addBook(
+                    name,
+                    author,
+                    ownerId,
+                    review,
+                    rating,
+                    pages,
+                    price,
+                    file,
+                    size,
+                    type
+                )
+            );
+        } 
     };
 
-    resetForm = () => this.setState(this.initialState);
+    // resetForm = () => this.setState(this.initialState);
+    resetForm = () => {
+        this.props.dispatch(reset("BookAddForm"));
+        this.setState(this.initialState);
+    }
 
     render() {
         return (
