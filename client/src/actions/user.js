@@ -29,3 +29,16 @@ export function clearProfilePhoto() {
         payload: {},
     };
 }
+
+export function getUsers() {
+    const request = axios
+        .get(`/api/users`)
+        .then((res) => {
+            return res.data;
+        });
+
+    return {
+        type: "FETCH_USERS",
+        payload: request,
+    };
+}

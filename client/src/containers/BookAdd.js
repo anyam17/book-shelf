@@ -17,7 +17,7 @@ class BookAdd extends Component {
             review: "",
             rating: "3",
             pages: "",
-            price: "",
+            price: 0,
             file: "",
             size: "",
             type: "",
@@ -68,12 +68,23 @@ class BookAdd extends Component {
         
         if (!files.length) return;
         this.createImage(files[0]);
-        
+        this.getNumPages(files[0]);
     };
 
+    getNumPages = (file) => {
+        let reader = new FileReader();
+        reader.readAsBinaryString(file);
+        reader.onloadend = (e) => {
+            let count = reader.result.match(/\/Type[\s]*\/Page[^s]/g).length;
+            this.setState({pages: count})
+        }
+
+        return;
+    }
+
     submitForm = (values) => {
-        const { ownerId, review, rating, file, size, type, isValidForm } = this.state;
-        const { name, author, pages, price } = values;
+        const { ownerId, review, rating, file, size, type, pages, isValidForm } = this.state;
+        const { name, author, price } = values;
 
         if (isValidForm) {
             this.props.dispatch(

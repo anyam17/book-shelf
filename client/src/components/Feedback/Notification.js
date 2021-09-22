@@ -30,6 +30,7 @@ export default function Notification(props) {
           vertical: "top",
           horizontal: "center",
         }}
+        style={{marginLeft: "8%"}}
         open={open || props.message ? true : false}
         autoHideDuration={6000}
         onClose={handleClose}

@@ -13,6 +13,7 @@ import {
   Typography
 } from '@material-ui/core';
 import AccountDetails from './AccountDetails';
+import AccountPassword from './AccountPassword';
 
 const Account = (props) => ( 
   <>
@@ -46,6 +47,7 @@ const Account = (props) => (
                   {props.photo ?
                     <img
                       className="rounded"
+                      /*src={require(`../../../../server/public/images/${props.photo}`).default}*/
                       src={`/images/${props.photo}`}
                       alt={props.firstname}
                       width="110"
@@ -100,6 +102,14 @@ const Account = (props) => (
             xs={12}
           > 
             <AccountDetails {...props} />
+          </Grid>
+          <Grid
+            item
+            lg={12}
+            md={6}
+            xs={12}
+          > 
+            <AccountPassword {...props} />
           </Grid>
         </Grid>
       </Container>

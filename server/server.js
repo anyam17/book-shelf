@@ -19,6 +19,7 @@ connection.once('open', function() {
 /* Model importations. */
 const { User } = require('./models/user');
 const { Book } = require('./models/book');
+const { Favorite } = require('./models/favorite');
 const { UserPhoto } = require('./models/userPhoto');
 const { auth } = require('./middleware/auth');
 
@@ -84,7 +85,7 @@ app.post('/api/login', (req, res) => {
             if(!isMatch) return res.json({
                 isAuth: false,
                 success: false,
-                message: "Wrong password"
+                message: "Incorrect password!"
             });
 
             user.generateToken((err,user) => {
@@ -123,6 +124,7 @@ app.get('/api/profile_photo',(req, res) => {
 app.post('/api/profile_photo', (req, res) => {
         try {
             // to declare some path to store your converted image
+            // const path = './server/public/images/photo_' + Date.now() + '.' + req.body.type;
             const path = './client/public/images/photo_' + Date.now() + '.' + req.body.type;
             const filePath = path.split("s/")[1];
             const file = req.body.photo;
@@ -158,7 +160,7 @@ app.post('/api/profile_photo', (req, res) => {
                 })
             }
         } catch (e) {
-            next(e);
+            console.log(e);
         }
 })
 
@@ -228,6 +230,7 @@ app.post('/api/book', (req, res, next) => {
     if (req.body.file) {
         try {
             // to declare some path to store your converted image
+            // const path = './server/public/books/' + Date.now() + '.' + req.body.type;
             const path = './client/public/books/' + Date.now() + '.' + req.body.type;
             const filePath = path.split("s/")[1];
      
@@ -270,12 +273,46 @@ app.put('/api/book', (req, res) => {
 });
 
 app.delete('/api/book', (req, res) => {
-    const id = req.query._id;
+    const id = req.query.id;
     Book.findByIdAndDelete(id, (err, data) => {
         if(err) return res.status(400).send(err);
         res.status(200).json({message: "Book Deleted successfully!", success: true})
     })
 })
+
+app.get('/api/book/favorite', (req, res) => {
+    let ownerId = req.query.id;
+
+    Favorite.find({ownerId: ownerId}).sort({_id: 'desc'}).exec((err, data) => {
+        if(err) return res.status(404).send(err);
+
+        let bookIds = data.map((d) => (d.bookId));
+        Book.find({"_id": {$in: bookIds}}, (err, data) => {
+            res.status(200).send(data);
+        })
+    })
+})
+
+app.post('/api/book/favorite', (req, res) => {
+    try {
+        const favorite = new Favorite(req.body);
+
+        favorite.save((err, data) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({
+                post: true,
+                bookId: data._id,
+                message: "Book added to favorite successfully!",
+                success: true
+            })
+        })
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+
+
 
 // App settings for production
 if (process.env.NODE_ENV === "production") {

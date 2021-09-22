@@ -77,3 +77,62 @@ export function clearBooks() {
         payload: {},
     };
 }
+
+export function deleteBook(id, ownerId) {
+    const request = axios.delete(`/api/book?id=${id}`);
+    return (dispatch) => {
+        dispatch({ type: "DELETE_BOOK_REQUEST" });
+        request
+            .then((res) => {
+                let result = res.data;
+                axios.get(`/api/my_books?id=${ownerId}`).then((res) => {
+                    dispatch({
+                        type: "FETCH_MY_BOOKS",
+                        payload: res.data,
+                    });
+                    dispatch({
+                        type: "DELETE_BOOK",
+                        payload: result,
+                    });
+
+                    setTimeout(() => {
+                        dispatch(dismissNotification());
+                    }, timeout);
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+}
+
+export function getFavorites(id) {
+    const request = axios.get(`/api/book/favorite?id=${id}`).then((res) => res.data);
+
+    return {
+        type: "GET_FAVORITE_BOOKS",
+        payload: request,
+    };
+}
+
+export function addToFavorite(bookId, ownerId) {
+    const request = axios.post("/api/book/favorite", {bookId, ownerId});
+
+    return (dispatch) => {
+        dispatch({ type: "ADD_BOOK_TO_FAVORITE_REQUEST" });
+        request
+            .then((res) => {
+                dispatch({
+                    type: "ADD_BOOK_TO_FAVORITE",
+                    payload: res.data,
+                });
+
+                setTimeout(() => {
+                    dispatch(dismissNotification());
+                }, timeout);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+}

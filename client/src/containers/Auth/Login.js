@@ -21,19 +21,15 @@ class Login extends Component {
         }
     }
 
-    handleInput = (e) => {
-        const { name, value } = e.target;
+    // handleInput = (e) => {
+    //     const { name, value } = e.target;
 
-        this.setState({
-            [name]: value,
-        });
-    }
+    //     this.setState({
+    //         [name]: value,
+    //     });
+    // }
 
-    submitForm = (e) => {
-        e.preventDefault();
-
-        this.props.dispatch(loginUser(this.state));
-    }
+    submitForm = (values) => this.props.dispatch(loginUser(values));
 
     render() { 
         return (

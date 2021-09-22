@@ -1,12 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getMyBooks, clearBooks, deleteBook } from "../actions/book";
+import { getFavorites } from "../actions/book";
 
-import BookMyComponent from "../components/Book/BookMy";
+import FavoriteComponent from "../components/Favorite/Favorite";
 import AlertDialog from "../components/Gadgets/AlertDialog";
-import BookEdit from "../components/Book/BookEdit";
 
-class BookMy extends React.Component {
+class Favorite extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,12 +19,8 @@ class BookMy extends React.Component {
     }
 
     componentWillMount = () => {
-        this.props.dispatch(getMyBooks(this.props.auth.id));
+        this.props.dispatch(getFavorites(this.props.auth.id));
     };
-
-    componentWillUnmount() {
-        this.props.dispatch(clearBooks());
-    }
 
     handleDialog = (e, id, nameOfBook) => {
         e.preventDefault();
@@ -33,7 +28,6 @@ class BookMy extends React.Component {
     };
 
     handleDelete = () => {
-        this.props.dispatch(deleteBook(this.state.id, this.state.ownerId));
         this.handleClose();
     };
 
@@ -58,11 +52,11 @@ class BookMy extends React.Component {
                     No Records Found
                 </h1>
             );
-        }
-
+        } 
+        
         return (
             <div>
-                <BookMyComponent
+                <FavoriteComponent
                     books={this.props.books}
                     handleDialog={this.handleDialog}
                     handleEditDialog={this.handleEditDialog}
@@ -75,18 +69,6 @@ class BookMy extends React.Component {
                     handleDelete={this.handleDelete}
                     handleClose={this.handleClose}
                     open={this.state.open}
-                />
-                <BookEdit
-                    {...this.state}
-                    handleEdit={this.handleEdit}
-                    handleClose={this.handleClose}
-                    open={this.state.openEdit}
-                    message={this.props.message}
-                    isLoading={this.props.isLoading}
-                    handleInput={this.handleInput}
-                    handleFile={this.handleFile}
-                    submitForm={this.submitForm}
-                    resetForm={this.resetForm}
                 />
             </div>
         );
@@ -103,4 +85,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(BookMy);
+export default connect(mapStateToProps)(Favorite);

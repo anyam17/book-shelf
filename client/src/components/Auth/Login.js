@@ -13,6 +13,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 import Notification from "../Feedback/Notification";
+import { Field, reduxForm } from "redux-form";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +38,24 @@ const useStyles = makeStyles((theme) => ({
 const Login = (props) => {
   const classes = useStyles();
 
+  const renderInputField = (field) => {
+    return (
+      <TextField
+        {...field.input}
+        variant="outlined"
+        margin="normal"
+        fullWidth
+        type={field.type}
+        id={field.id}
+        name={field.name}
+        label={field.label}
+        error={field.meta.touched && field.meta.error ? true : false}
+        helperText={field.meta.touched && field.meta.error}
+        autoFocus={field.autoFocus}
+      />
+    );
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -47,32 +66,21 @@ const Login = (props) => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate onSubmit={props.submitForm}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
+        <form className={classes.form} noValidate onSubmit={props.handleSubmit((event) => props.submitForm(event))}>
+          <Field
+            component={renderInputField}
+            type="text"
             id="email"
-            label="Email Address"
             name="email"
-            autoComplete="email"
+            label="Email Address"
             autoFocus
-            value={props.email}
-            onChange={props.handleInput}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
+          <Field
+            component={renderInputField}
             type="password"
             id="password"
-            autoComplete="current-password"
-            value={props.password}
-            onChange={props.handleInput}
+            name="password"
+            label="Password"
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -116,4 +124,22 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+function validate(values) {
+  const errors = {};
+
+  if (!values.email) {
+    errors.email = "Email address required";
+  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    errors.email = "Invalid email address";
+  }
+
+  if (!values.password) {
+    errors.password = "Password required";
+  } else if (values.password.length < 7) {
+    errors.password = "Password length must be greater than 6 characters";
+  }
+
+  return errors;
+}
+
+export default reduxForm({ validate, form: "LoginForm" })(Login);

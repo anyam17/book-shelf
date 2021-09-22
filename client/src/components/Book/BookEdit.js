@@ -1,28 +1,20 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import InputLabel from "@material-ui/core/InputLabel";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-
-import Notification from "../Feedback/Notification";
 import { Field, reduxForm } from "redux-form";
 
+import Notification from "../Feedback/Notification";
+
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
@@ -50,9 +42,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AddBook = (props) => {
+export function BookEdit(props) {
   const classes = useStyles();
-  const redBorder = props.errors.file && {borderColor: "red"};
 
   const renderInputField = (field) => {
     return (
@@ -65,6 +56,7 @@ const AddBook = (props) => {
         id={field.id}
         name={field.name}
         label={field.label}
+        placeholder={field.value}
         error={field.meta.touched && field.meta.error ? true : false}
         helperText={field.meta.touched && field.meta.error}
         autoFocus={field.autoFocus}
@@ -73,51 +65,35 @@ const AddBook = (props) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Typography component="h1" variant="h5">
-          Add New Book
-        </Typography>
-        <form
+    <div>
+      <Dialog open={props.open} onClose={props.handleClose}>
+        <DialogTitle>Edit Book</DialogTitle>
+        <DialogContent>
+      <form
           className={classes.form}
           onSubmit={props.handleSubmit((event) => props.submitForm(event))}
         >
+          <DialogContentText>
+            To Edit this book, please fill in the form.
+          </DialogContentText>
+          
           <Field
             component={renderInputField}
             type="text"
             id="name"
             name="name"
             label="Name Of Book"
+            value={props.name}
             autoFocus
           />
           <Field
             component={renderInputField}
+            type="text"
             id="author"
             name="author"
             label="Author"
-            type="text"
+            value={props.author}
           />
-          <div style={redBorder}>
-            <InputLabel 
-              className={classes.fileInput}
-              htmlFor="inputBtn"
-              error={props.errors.file && true}
-            >
-              Choose File *{" "}
-              <div style={{ float: "right", fontWeight: "bold" }}>
-                {props.fileName}
-              </div>
-            </InputLabel>
-            <input
-              type="file"
-              id="inputBtn"
-              style={{ display: "none" }}
-              multiple=""
-              onChange={props.handleFile}
-            />
-          </div>
-          {props.errors.file && <p className={classes.helperTxt}>{props.errors.file}</p>}
 
           <Button
             type="submit"
@@ -127,7 +103,7 @@ const AddBook = (props) => {
             color="primary"
             className={classes.submit}
           >
-            {props.isLoading ? "Adding..." : "Add"}
+            {props.isLoading ? "Updating..." : "Update"}
           </Button>
           <Grid container>
             <Grid item xs>
@@ -137,12 +113,14 @@ const AddBook = (props) => {
             </Grid>
           </Grid>
         </form>
-      </div>
+        </DialogContent>
+        
 
-      <Notification message={props.message} type="success" />
-    </Container>
+        <Notification message={props.message} type="success" />
+      </Dialog>
+    </div>
   );
-};
+}
 
 function validate(values) {
   const errors = {};
@@ -170,4 +148,4 @@ function validate(values) {
   return errors;
 }
 
-export default reduxForm({ validate, form: "BookAddForm" })(AddBook);
+export default reduxForm({ validate, form: "BookEditForm", enableReinitialize: true })(BookEdit);

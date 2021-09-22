@@ -1,4 +1,8 @@
-export default (state={}, action) => {
+const initialState = {
+    users: [],
+};
+
+export default (state=initialState, action) => {
     switch(action.type) {
         case "USER_PROFILE_PHOTO_REQUEST":
             return {
@@ -18,6 +22,12 @@ export default (state={}, action) => {
             return {
                 ...state,
                 auth: action.payload.data
+            }
+
+        case 'FETCH_USERS':
+            return {
+                ...state,
+                users: action.payload
             }
 
         default:
