@@ -11,12 +11,12 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import HomeIcon from "@material-ui/icons/Home";
+// import HomeIcon from "@material-ui/icons/Home";
 import PeopleIcon from "@material-ui/icons/People";
 import BookIcon from "@material-ui/icons/Book";
 import PermMediaOutlinedIcon from "@material-ui/icons/PhotoSizeSelectActual";
 import AddIcon from "@material-ui/icons/Add";
-import SettingsEthernetIcon from "@material-ui/icons/SettingsEthernet";
+// import SettingsEthernetIcon from "@material-ui/icons/SettingsEthernet";
 import AppRegistration from "@material-ui/icons/HowToReg";
 import SettingsIcon from "@material-ui/icons/Settings";
 import LogoutIcon from "@material-ui/icons/ExitToApp";
@@ -85,8 +85,8 @@ const categories = [
     children: [
       { id: "Users", link: "/users", restricted: true, icon: <PeopleIcon /> },
       {
-        id: "Admins",
-        link: "/admins",
+        id: "All Books",
+        link: "/books",
         restricted: true,
         icon: <PhonelinkSetupIcon />,
       },

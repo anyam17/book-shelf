@@ -32,7 +32,7 @@ export function clearProfilePhoto() {
 
 export function getUsers() {
     const request = axios
-        .get(`/api/users`)
+        .get(`/api/admin/users`)
         .then((res) => {
             return res.data;
         });
@@ -41,4 +41,58 @@ export function getUsers() {
         type: "FETCH_USERS",
         payload: request,
     };
+}
+
+export function setRole(userId, role) {
+    return (dispatch) => {
+        axios
+            .post(`/api/admin/user/role?userId=${userId}`, { role })
+            .then((res) => {
+                dispatch(getUsers());
+                dispatch({
+                    type: "SET_USER_ROLE",
+                    payload: res.data,
+                });
+
+                setTimeout(() => {
+                    dispatch(dismissNotification());
+                }, timeout);
+            });
+    }
+}
+
+export function setStatus(userId, isActive) {
+    return (dispatch) => {
+        axios
+            .post(`/api/admin/user/status?userId=${userId}`, { isActive })
+            .then((res) => {
+                dispatch(getUsers());
+                dispatch({
+                    type: "SET_USER_STATUS",
+                    payload: res.data,
+                });
+
+                setTimeout(() => {
+                    dispatch(dismissNotification());
+                }, timeout);
+            });
+    }
+}
+
+export function deleteUser(userId) {
+    return (dispatch) => {
+        axios
+            .delete(`/api/admin/user?userId=${userId}`)
+            .then((res) => {
+                dispatch(getUsers());
+                dispatch({
+                    type: "DELETE_USER",
+                    payload: res.data,
+                });
+
+                setTimeout(() => {
+                    dispatch(dismissNotification());
+                }, timeout);
+            });
+    }
 }

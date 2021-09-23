@@ -6,6 +6,7 @@ import {
   Avatar,
   Box,
   Card,
+  Chip,
   Divider,
   CardHeader,
   Checkbox,
@@ -17,6 +18,8 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import Switch from '@mui/material/Switch';
+import Tooltip from '@mui/material/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -24,9 +27,10 @@ import { convertFromBytesTo } from "../../utils";
 import { Document, Page } from "react-pdf";
 import Notification from "../Feedback/Notification";
 
-const Favorite = ({
+const AllBooks = ({
   books,
-  handleRemoveFromFavoritesDialog,
+  handleDeleteDialog,
+  handleApproveBook,
   message,
   success,
   ...rest
@@ -81,11 +85,20 @@ const Favorite = ({
     <div style={{ margin: 10 }}>
       {books && books.length <= 0 ? (
         <h1 style={{ textAlign: "center", marginTop: "15%" }}>
-          You have not added any books to your favorites yet!
+          No book has been added yet!
         </h1>
       ) : (
         <Card {...rest}>
-          <CardHeader title="Favorite Books" />
+          <CardHeader 
+            action={
+              <Chip
+                color="primary"
+                label={books && books.length}
+                // size="small"
+              />
+            }
+            title="All Books" 
+          />
           <Divider />
           <Box sx={{ minWidth: 1050 }}>
             <Table>
@@ -110,33 +123,27 @@ const Favorite = ({
                   <TableCell>Pages</TableCell>
                   <TableCell>Size</TableCell>
                   <TableCell>Created At</TableCell>
+                  <TableCell>Status</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {books &&
-                  books.slice(0, limit).map((favorite) => (
+                  books.slice(0, limit).map((book) => (
                     <TableRow
                       style={{ textDecoration: "none" }}
                       component={Link}
-                      to={{
-                        pathname: `book/${favorite.book._id}`,
-                        state: favorite.book,
-                      }}
+                      to={{ pathname: `book/${book._id}`, state: book }}
                       hover
-                      key={favorite._id}
-                      selected={
-                        selectedBookIds.indexOf(favorite.book._id) !== -1
-                      }
+                      key={book._id}
+                      selected={selectedBookIds.indexOf(book._id) !== -1}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                          checked={
-                            selectedBookIds.indexOf(favorite.book._id) !== -1
-                          }
+                          checked={selectedBookIds.indexOf(book._id) !== -1}
                           onClick={(event) => {
                             event.stopPropagation();
-                            handleSelectOne(event, favorite.book._id);
+                            handleSelectOne(event, book._id);
                           }}
                           value="true"
                         />
@@ -149,53 +156,57 @@ const Favorite = ({
                           }}
                         >
                           <Avatar
-                            src={favorite.book.avatarUrl}
+                            src={book.avatarUrl}
                             style={{ marginRight: 15 }}
                           >
-                            <Document
-                              file={`/books/${favorite.book.file}`}
-                              height={40}
-                            >
+                            <Document file={`/books/${book.file}`} height={40}>
                               <Page pageNumber={1} />
                             </Document>
                           </Avatar>
                           <Typography color="textPrimary" variant="body1">
-                            {`${_.startCase(favorite.book.name)}`}
+                            {`${_.startCase(book.name)}`}
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>{`${_.startCase(
-                        favorite.book.author
-                      )}`}</TableCell>
-                      <TableCell>{`${_.startCase(
-                        favorite.book.rating
-                      )}`}</TableCell>
-                      <TableCell>{favorite.book.pages}</TableCell>
+                      <TableCell>{`${_.startCase(book.author)}`}</TableCell>
+                      <TableCell>{`${_.startCase(book.rating)}`}</TableCell>
+                      <TableCell>{book.pages}</TableCell>
+                      <TableCell>{convertFromBytesTo(book.size)}</TableCell>
                       <TableCell>
-                        {convertFromBytesTo(favorite.book.size)}
+                        {moment(book.createdAt).format("DD/MM/YYYY")}
                       </TableCell>
                       <TableCell>
-                        {moment(favorite.createdAt).format("DD/MM/YYYY")}
+                        <Chip
+                          color={book.isApproved ? "primary" : "secondary"}
+                          label={book.isApproved ? `Approved` : `Disapproved`}
+                          size="small"
+                        />
                       </TableCell>
                       <TableCell>
                         <div>
-                          <IconButton
-                            onClick={(e) =>
-                              handleRemoveFromFavoritesDialog(
-                                e,
-                                favorite._id,
-                                favorite.book.name
-                              )
-                            }
-                            aria-label="remove book"
-                            style={{
-                              display: "inline-block",
-                              marginLeft: 10,
-                              color: "red",
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          <Tooltip title={book.isApproved ? "Disapprove" : "Approve"}>
+                            <Switch
+                              color={book.isApproved ? "primary" : "secondary"}
+                              checked={book.isApproved}
+                              onClick={(e) => {e.stopPropagation(); handleApproveBook(e, book._id)}}
+                              inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                            <IconButton
+                              onClick={(e) =>
+                                handleDeleteDialog(e, book._id, book.name)
+                              }
+                              aria-label="remove book"
+                              style={{
+                                display: "inline-block",
+                                marginLeft: 10,
+                                color: "red",
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -225,4 +236,4 @@ const Favorite = ({
   );
 };
 
-export default Favorite;
+export default AllBooks;

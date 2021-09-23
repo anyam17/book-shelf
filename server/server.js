@@ -46,7 +46,9 @@ app.get('/api/auth', auth, (req, res) => {
         id: req.user._id,
         email: req.user.email,
         firstname: req.user.firstname,
-        lastname: req.user.lastname,
+        role: req.user.role,
+        isActive: req.user.isActive,
+        updatedAt: req.user.updatedAt,
         photo: photoData.photo,
         photoId: photoData.id,
     })
@@ -176,13 +178,6 @@ app.get('/api/getReviewer',(req,res) => {
     })
 })
 
-app.get('/api/users',(req, res) => {
-    User.find({},(err, users) => {
-        if(err) return res.status(400).send(err);
-        res.status(200).send(users)
-    })
-})
-
 app.get('/api/user_posts', (req, res) => {
     Book.find({ownerId: req.query.user}).exec((err, data) => {
         if(err) return res.status(400).send(err);
@@ -210,7 +205,7 @@ app.get('/api/books',(req, res) => {
     let limit = parseInt(req.query.limit);
     let order = req.query.order;
 
-    Book.find().skip(skip).sort({_id:order}).limit(limit).exec((err, data) => {
+    Book.find({isApproved: true}).skip(skip).sort({_id:order}).limit(limit).exec((err, data) => {
         if(err) return res.status(400).send(err);
         res.send(data);
     })
@@ -283,12 +278,29 @@ app.delete('/api/book', (req, res) => {
 app.get('/api/book/favorite', (req, res) => {
     let ownerId = req.query.id;
 
-    Favorite.find({ownerId: ownerId}).sort({_id: 'desc'}).exec((err, data) => {
+    Favorite.find({ownerId: ownerId}).sort({_id: 'desc'}).exec((err, favorite) => {
         if(err) return res.status(404).send(err);
 
-        let bookIds = data.map((d) => (d.bookId));
-        Book.find({"_id": {$in: bookIds}}, (err, data) => {
-            res.status(200).send(data);
+        let bookIds = favorite.map((d) => (d.bookId));
+        Book.find({"_id": {$in: bookIds}}, (err, books) => {
+            if(err) return res.status(404).send(err);
+            
+            let combined = []
+            favorite.forEach(d => {
+                books.forEach((book, i) => {
+                    if (d.bookId === book._id.toString()) {
+                        combined[i] = {
+                            _id: d._id,
+                            bookId: d.bookId,
+                            createdAt: d.createdAt,
+                            updatedAt: d.updatedAt,
+                            book
+                        }
+                    }
+                })
+            })
+
+            res.status(200).send(combined);
         })
     })
 })
@@ -301,7 +313,6 @@ app.post('/api/book/favorite', (req, res) => {
             if(err) return res.status(400).send(err);
             res.status(200).json({
                 post: true,
-                bookId: data._id,
                 message: "Book added to favorite successfully!",
                 success: true
             })
@@ -310,6 +321,79 @@ app.post('/api/book/favorite', (req, res) => {
         console.log(e);
     }
 });
+
+app.delete('/api/book/favorite', (req, res) => {
+    Favorite.findByIdAndDelete(req.query.favoriteId, (err, data) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({message: "Book Removed from favorite successfully!", success: true})
+    });
+});
+
+
+/*************************************************/
+/********* ROUTES FOR ADMIN ACTIONS.   ***********/
+/*************************************************/
+app.get('/api/admin/users',(req, res) => {
+    User.find({},(err, users) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).send(users)
+    })
+})
+
+app.post('/api/admin/user/role', (req, res) => {
+    let userId = req.query.userId;
+    let role = req.body.role;
+
+    if (role == 1) role = 0;
+    else role = 1;
+    
+    User.findByIdAndUpdate(userId, {role}, {new: true}, (err, data) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({
+            message: "User role updated successfully!",
+            success: true,
+        })
+    })
+})
+
+app.post('/api/admin/user/status', (req, res) => {
+    let userId = req.query.userId;
+    
+    User.findByIdAndUpdate(userId, {isActive: req.body.isActive}, {new: true}, (err, data) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({
+            message: "User status updated successfully!",
+            success: true,
+        })
+    })
+})
+
+app.delete('/api/admin/user', (req, res) => {
+    User.findByIdAndDelete(req.query.userId, (err, data) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({message: "User account deleted successfully!", success: true})
+    });
+});
+
+app.get('/api/admin/books', (req, res) => {
+    Book.find().sort({_id: 'desc'}).exec((err, data) => {
+        if(err) return res.status(404).send(err);
+        res.status(200).send(data);
+    })
+})
+
+app.post('/api/admin/book/approve', (req, res) => {
+    let bookId = req.query.bookId;
+    
+    Book.findByIdAndUpdate(bookId, {isApproved: req.body.isApproved}, {new: true}, (err, data) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({
+            message: "Book approved successfully!",
+            success: true,
+        })
+    })
+})
+
 
 
 

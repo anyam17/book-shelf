@@ -28,6 +28,11 @@ const userSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    isActive: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
     token: {
         type: String
     }

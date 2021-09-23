@@ -70,6 +70,32 @@ export default function(state=initialState, action) {
                 success: action.payload.success,
                 isLoading: false
             }
+            
+        case 'REMOVE_BOOK_FROM_FAVORITE_REQUEST':
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case 'REMOVE_BOOK_FROM_FAVORITE':
+            return {
+                ...state,
+                message: action.payload.message,
+                success: action.payload.success,
+                isLoading: false
+            }
+
+        case 'GET_ALL_BOOKS':
+            return {
+                ...state,
+                books: action.payload
+            }
+        case 'APPROVE_BOOK':
+            return {
+                ...state,
+                message: action.payload.message,
+                success: action.payload.success,
+            }
 
         case 'DISMISS_NOTIFICATION':
             return {

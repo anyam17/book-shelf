@@ -1,31 +1,40 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getFavorites, removeFromFavorites } from "../actions/book";
+import { getAllBooks, approveBook, clearBooks } from "../../actions/book";
 
-import FavoriteComponent from "../components/Favorite/Favorite";
-import AlertDialog from "../components/Gadgets/AlertDialog";
+import AllBooksComponent from "../../components/Admin/AllBooks";
+import AlertDialog from "../../components/Gadgets/AlertDialog";
 
-class Favorite extends React.Component {
+class AllBooks extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            favoriteId: "",
+            bookId: "",
             open: false,
             name: "",
         };
     }
 
     componentWillMount = () => {
-        this.props.dispatch(getFavorites(this.props.auth.id));
+        this.props.dispatch(getAllBooks());
     };
 
-    handleRemoveFromFavoritesDialog = (e, favoriteId, nameOfBook) => {
+    componentWillUnmount() {
+        this.props.dispatch(clearBooks());
+    }
+
+    handleApproveBook = (e, bookId) => {
         e.preventDefault();
-        this.setState({ favoriteId, name: nameOfBook, open: true });
+        this.props.dispatch(approveBook(bookId, e.target.checked));
     };
 
-    handleRemoveFromFavorites = () => {
-        this.props.dispatch(removeFromFavorites(this.state.favoriteId, this.props.auth.id))
+    handleDeleteDialog = (e, bookId, nameOfBook) => {
+        e.preventDefault();
+        this.setState({ bookId, name: nameOfBook, open: true });
+    };
+
+    handleDeleteBook = () => {
+        this.props.dispatch(approveBook(this.state.bookId, this.props.auth.id))
         this.handleClose();
     };
 
@@ -44,16 +53,17 @@ class Favorite extends React.Component {
 
         return (
             <div>
-                <FavoriteComponent
+                <AllBooksComponent
                     books={this.props.books}
-                    handleRemoveFromFavoritesDialog={this.handleRemoveFromFavoritesDialog}
+                    handleApproveBook={this.handleApproveBook}
+                    handleDeleteDialog={this.handleDeleteDialog}
                     message={this.props.message}
                     success={this.props.success}
                 />
                 <AlertDialog
                     title={"Confirmation"}
                     text={`Are you sure you want to remove ** ${this.state.name}** from favorites?`}
-                    handleDelete={this.handleRemoveFromFavorites}
+                    handleDelete={this.handleDeleteBook}
                     handleClose={this.handleClose}
                     open={this.state.open}
                 />
@@ -72,4 +82,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Favorite);
+export default connect(mapStateToProps)(AllBooks);

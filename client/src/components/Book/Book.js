@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
+import moment from "moment";
 import _ from "lodash";
 import {
   Box,
   Container,
   Grid,
   Card,
-  Chip,
   CardHeader,
   CardActions,
   CardContent,
@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 import ShareIcon from "@material-ui/icons/Share";
 import FavoriteIcon from "@material-ui/icons/Favorite";
+import Rating from '@mui/material/Rating';
 
 import { convertFromBytesTo } from "../../utils";
 import { addToFavorite } from "../../actions/book";
@@ -27,7 +28,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const Book = (props) => {
   const dispatch = useDispatch();
   let location = useLocation();
-  const { _id, name, author, pages, file, createdAt, review, rating, size } = location.state;
+  const { _id, name, author, file, updatedAt, review, rating, size } = location.state;
 
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -62,10 +63,35 @@ const Book = (props) => {
                   <br />
                   <br />
                   File size: <strong>{convertFromBytesTo(size)}</strong>
+                  <br />
+                  <br />
+                  Updated On: <strong><i>{moment(updatedAt).format("DD/MM/YYYY")}</i></strong>
                 </CardContent>
+                <CardActions>
+                  <IconButton
+                    onClick={(e) => handleAddToFavorite(e, _id)}
+                    aria-label="add to favorites"
+                    style={{marginRight: 30}}
+                  >
+                    <FavoriteIcon />
+                  </IconButton>
+                  <Rating
+                    name="simple-controlled"
+                    value={rating}
+                    onChange={(event, newValue) => {
+                      props.setRating(newValue);
+                    }}
+                  />
+                  <IconButton
+                    aria-label="share"
+                    style={{marginLeft: 30}}
+                  >
+                    <ShareIcon />
+                  </IconButton>
+                </CardActions>
                 <Divider />
                 <Grid container spacing={2} style={{ padding: 10 }}>
-                  <Grid item lg={12} sm={6} xl={3} xs={12}>
+                  <Grid item lg={12} sm={12} xl={12} xs={12}>
                     <Card>
                       <CardHeader title={`Description`} />
                       <CardContent>None</CardContent>
@@ -73,6 +99,14 @@ const Book = (props) => {
                   </Grid>
                 </Grid>
                 <Grid container spacing={2} style={{ padding: 10 }}>
+                  <Grid item lg={12} sm={12} xl={12} xs={12}>
+                    <Card>
+                      <CardHeader title={`Reviews`} />
+                      <CardContent>{review}</CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+                {/*<Grid container spacing={2} style={{ padding: 10 }}>
                   <Grid item lg={6} sm={6} xl={3} xs={12}>
                     <Card>
                       <CardHeader />
@@ -102,7 +136,7 @@ const Book = (props) => {
                       </CardContent>
                     </Card>
                   </Grid>
-                </Grid>
+                </Grid>*/}
               </Card>
             </Grid>
             <Grid item lg={6} md={12} xl={9} xs={12}>

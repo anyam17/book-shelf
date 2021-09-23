@@ -4,13 +4,8 @@ import _ from "lodash";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import ShareIcon from "@material-ui/icons/Share";
-import Chip from "@material-ui/core/Chip";
 
 import { Document, Page } from "react-pdf";
 
@@ -32,22 +27,14 @@ const useStyles = makeStyles({
   title: {
     fontSize: 13,
   },
-  cardActions: {
-    // position: "absolute",
-    // marginBottom: 5,
-  },
   cardHeaderr: {
     padding: 8,
-  },
-  icons: {
-    display: "inline-block",
-    marginLeft: 10,
   },
 });
 
 const BookItem = (book) => {
   const classes = useStyles();
-  const { _id, name, author, pages, file } = book;
+  const { _id, name, author, file } = book;
 
   const onDocumentLoadSuccess = ({ numPages }) => {};
 
@@ -67,21 +54,6 @@ const BookItem = (book) => {
           </Document>
         </Link>
       </CardMedia>
-      {/*<CardActions className={classes.cardActions}>
-        <Chip
-          label={`${pages}${" "}p.g`}
-          variant="outlined"
-          color="primary"
-          size="small"
-          className={classes.icons}
-        />
-        <IconButton aria-label="add to favorites" className={classes.icons}>
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share" className={classes.icons}>
-          <ShareIcon />
-        </IconButton>
-      </CardActions>*/}
     </Card>
   );
 };

@@ -1,12 +1,10 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import InputLabel from "@material-ui/core/InputLabel";
+import * as React from "react";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 400,
     lineHeight: 1.66,
     letterSpacing: "0.03333em",
-  }
+  },
 }));
 
 export function BookEdit(props) {
@@ -69,52 +67,51 @@ export function BookEdit(props) {
       <Dialog open={props.open} onClose={props.handleClose}>
         <DialogTitle>Edit Book</DialogTitle>
         <DialogContent>
-      <form
-          className={classes.form}
-          onSubmit={props.handleSubmit((event) => props.submitForm(event))}
-        >
-          <DialogContentText>
-            To Edit this book, please fill in the form.
-          </DialogContentText>
-          
-          <Field
-            component={renderInputField}
-            type="text"
-            id="name"
-            name="name"
-            label="Name Of Book"
-            value={props.name}
-            autoFocus
-          />
-          <Field
-            component={renderInputField}
-            type="text"
-            id="author"
-            name="author"
-            label="Author"
-            value={props.author}
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            disabled={props.isLoading && true}
-            color="primary"
-            className={classes.submit}
+          <form
+            className={classes.form}
+            onSubmit={props.handleSubmit((event) => props.submitForm(event))}
           >
-            {props.isLoading ? "Updating..." : "Update"}
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2" onClick={props.resetForm}>
-                Cancel
-              </Link>
+            <DialogContentText>
+              To Edit this book, please fill in the form.
+            </DialogContentText>
+
+            <Field
+              component={renderInputField}
+              type="text"
+              id="name"
+              name="name"
+              label="Name Of Book"
+              value={props.name}
+              autoFocus
+            />
+            <Field
+              component={renderInputField}
+              type="text"
+              id="author"
+              name="author"
+              label="Author"
+              value={props.author}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              disabled={props.isLoading && true}
+              color="primary"
+              className={classes.submit}
+            >
+              {props.isLoading ? "Updating..." : "Update"}
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2" onClick={props.resetForm}>
+                  Cancel
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
+          </form>
         </DialogContent>
-        
 
         <Notification message={props.message} type="success" />
       </Dialog>
@@ -148,4 +145,8 @@ function validate(values) {
   return errors;
 }
 
-export default reduxForm({ validate, form: "BookEditForm", enableReinitialize: true })(BookEdit);
+export default reduxForm({
+  validate,
+  form: "BookEditForm",
+  enableReinitialize: true,
+})(BookEdit);

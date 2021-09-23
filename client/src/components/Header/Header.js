@@ -1,8 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { filterData } from "../../actions/filter";
-import _ from "lodash";
 
 import PropTypes from "prop-types";
 import {
@@ -12,13 +10,11 @@ import {
   Hidden,
   IconButton,
   Box,
-  Button,
   Card,
   CardContent,
   TextField,
   InputAdornment,
   SvgIcon,
-  Avatar,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -77,13 +73,14 @@ class Header extends React.Component {
   };
 
   render() {
-    const { classes, onDrawerToggle, auth } = this.props;
+    const { classes, onDrawerToggle } = this.props;
 
     let field =
       window.location.pathname === `/` ||
       window.location.pathname === `/my_books` ||
       window.location.pathname === `/favorite` ||
-      window.location.pathname === `/users` 
+      window.location.pathname === `/books` ||
+      window.location.pathname === `/users`
         ? { c: `#f4f6f8`, h: 120 }
         : { c: `#232f3e`, h: `1%` };
 
@@ -115,9 +112,10 @@ class Header extends React.Component {
                   </IconButton>
                 </Grid>
               </Hidden>
-              {window.location.pathname === "/" || 
+              {window.location.pathname === "/" ||
               window.location.pathname === `/users` ||
               window.location.pathname === `/favorite` ||
+              window.location.pathname === `/books` ||
               window.location.pathname === "/my_books" ? (
                 <Box>
                   <Box sx={{ mt: 2 }}>
@@ -140,20 +138,6 @@ class Header extends React.Component {
                             variant="outlined"
                           />
                         </Box>
-                        {/*<Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <Button
-                      sx={{ mx: 1 }}
-                      color="primary"
-                      variant="contained"
-                    >
-                      Add Book
-                    </Button>
-                  </Box>*/}
                       </CardContent>
                     </Card>
                   </Box>

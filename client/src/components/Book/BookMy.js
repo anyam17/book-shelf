@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import moment from "moment";
 import _ from "lodash";
-import SearchIcon from "@material-ui/icons/Search";
 import {
   Avatar,
   Box,
   Card,
-  Chip,
-  TextField,
+  CardHeader,
+  Divider,
   Checkbox,
   Table,
   TableBody,
@@ -18,7 +16,6 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  Button,
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -78,6 +75,8 @@ const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...re
   return (
     <div style={{ margin: 10 }}>
       <Card {...rest}>
+      <CardHeader title="My Books" />
+          <Divider />
         <Box sx={{ minWidth: 1050 }}>
           <Table>
             <TableHead>
@@ -190,10 +189,6 @@ const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...re
       )}
     </div>
   );
-};
-
-BookMy.propTypes = {
-  // books: PropTypes.array.isRequired
 };
 
 export default BookMy;

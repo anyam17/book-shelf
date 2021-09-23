@@ -42,6 +42,11 @@ const bookSchema = mongoose.Schema({
     type:{
         type: String,
         required: true
+    },
+    isApproved:{
+        type: Boolean,
+        required: true,
+        default: false
     }
 }, { timestamps: true})
 

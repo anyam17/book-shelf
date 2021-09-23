@@ -1,15 +1,14 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 import moment from "moment";
 import _ from "lodash";
 // import PerfectScrollbar from 'react-perfect-scrollbar';
-import SearchIcon from "@material-ui/icons/Search";
 import {
   Avatar,
   Box,
   Card,
+  CardHeader,
+  Divider,
   Chip,
-  TextField,
   Checkbox,
   Table,
   TableBody,
@@ -19,8 +18,16 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import Switch from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
-const Users = ({ users, ...rest }) => {
+import Notification from "../Feedback/Notification";
+
+const Users = ({ users, handleSetRole, handleSetStatus, handleDeleteDialog, message, success, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -76,6 +83,11 @@ const Users = ({ users, ...rest }) => {
     <div style={{ margin: 10 }}>
       <Card {...rest}>
         {/*<PerfectScrollbar>*/}
+        <CardHeader
+          action={<Chip color="primary" label={users && users.length} />}
+          title="All Users"
+        />
+        <Divider />
         <Box sx={{ minWidth: 1050 }}>
           <Table>
             <TableHead>
@@ -96,7 +108,9 @@ const Users = ({ users, ...rest }) => {
                 <TableCell>Location</TableCell>
                 <TableCell>Phone</TableCell>
                 <TableCell>Role</TableCell>
+                <TableCell>Status</TableCell>
                 <TableCell>Registration date</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -122,7 +136,7 @@ const Users = ({ users, ...rest }) => {
                         }}
                       >
                         <Avatar
-                          src={user.avatarUrl}
+                          src={`/images/${user.photo}`}
                           style={{ marginRight: 15 }}
                         ></Avatar>
                         <Typography color="textPrimary" variant="body1">
@@ -136,14 +150,51 @@ const Users = ({ users, ...rest }) => {
                     <TableCell>{`${_.startCase(user.country)}`}</TableCell>
                     <TableCell>{user.phone}</TableCell>
                     <TableCell>
-                      <Chip
-                        color="primary"
-                        label={user.role == 0 ? `Basic` : `Admin`}
+                      <ToggleButtonGroup
                         size="small"
-                      />
+                        color={user.role === 1 ? "secondary" : "primary"}
+                        value={user.role}
+                        exclusive
+                        onChange={(e) => handleSetRole(e, user.role, user._id)}
+                      >
+                        <ToggleButton value={1} disabled={user.role === 1 ? true : false}>Admin</ToggleButton>
+                        <ToggleButton value={0} disabled={user.role === 0 ? true : false}>Basic</ToggleButton>
+                      </ToggleButtonGroup>
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip
+                        title={user.isActive ? "Deactivate" : "Activate"}
+                      >
+                        <Switch
+                          color={user.isActive ? "primary" : "secondary"}
+                          checked={user.isActive}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSetStatus(e, user._id);
+                          }}
+                          inputProps={{ "aria-label": "controlled" }}
+                        />
+                      </Tooltip>
                     </TableCell>
                     <TableCell>
                       {moment(user.createdAt).format("DD/MM/YYYY")}
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title="Delete">
+                        <IconButton
+                          onClick={(e) =>
+                            handleDeleteDialog(e, user._id, user.firstname)
+                          }
+                          aria-label="remove user"
+                          style={{
+                            display: "inline-block",
+                            marginLeft: 10,
+                            color: "red",
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -161,6 +212,12 @@ const Users = ({ users, ...rest }) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
+
+      {success ? (
+        <Notification message={message} type="success" />
+      ) : (
+        <Notification message={message} type="error" />
+      )}
     </div>
   );
 };

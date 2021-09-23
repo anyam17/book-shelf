@@ -23,9 +23,11 @@ class Home extends React.Component {
     };
 
     renderItems = (books) =>
-        books
+        books && books.length > 0
             ? books.map((book, i) => <BookItem {...book} key={book._id} />)
-            : null;
+            :  <h1 style={{ textAlign: "center", marginTop: "15%" }}>
+                    No Books have been added yet!
+                </h1>;
 
     render() {
         if (this.props.isEmpty) {
