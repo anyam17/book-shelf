@@ -2,6 +2,10 @@ node_modules/
 .idea/
 
 # app data files
-server/assets/books
-server/assets/photos
+server/assets/books/*
+server/assets/photos/*
 /server/config/
+
+# app data files
+!server/assets/books/.gitkeep
+!server/assets/photos/.gitkeep
