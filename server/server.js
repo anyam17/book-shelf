@@ -46,6 +46,7 @@ app.get('/api/auth', auth, (req, res) => {
         id: req.user._id,
         email: req.user.email,
         firstname: req.user.firstname,
+        lastname: req.user.lastname,
         role: req.user.role,
         isActive: req.user.isActive,
         updatedAt: req.user.updatedAt,
@@ -126,9 +127,9 @@ app.get('/api/profile_photo',(req, res) => {
 app.post('/api/profile_photo', (req, res) => {
         try {
             // to declare some path to store your converted image
-            // const path = './server/public/images/photo_' + Date.now() + '.' + req.body.type;
-            const path = './client/public/images/photo_' + Date.now() + '.' + req.body.type;
-            const filePath = path.split("s/")[1];
+            const path = './server/assets/photos/photo_' + Date.now() + '.' + req.body.type;
+            // const path = './client/public/images/photo_' + Date.now() + '.' + req.body.type;
+            const filePath = path.split("photos/")[1];
             const file = req.body.photo;
      
             // to convert base64 format into random filename
@@ -225,9 +226,9 @@ app.post('/api/book', (req, res, next) => {
     if (req.body.file) {
         try {
             // to declare some path to store your converted image
-            // const path = './server/public/books/' + Date.now() + '.' + req.body.type;
-            const path = './client/public/books/' + Date.now() + '.' + req.body.type;
-            const filePath = path.split("s/")[1];
+            const path = './server/assets/books/' + Date.now() + '.' + req.body.type;
+            // const path = './client/public/books/' + Date.now() + '.' + req.body.type;
+            const filePath = path.split("books/")[1];
      
             const file = req.body.file;
      
@@ -336,7 +337,31 @@ app.delete('/api/book/favorite', (req, res) => {
 app.get('/api/admin/users',(req, res) => {
     User.find({},(err, users) => {
         if(err) return res.status(400).send(err);
-        res.status(200).send(users)
+
+        let userIds = users.map((user) => user._id);
+        UserPhoto.find({"userId": {$in: userIds}}, (err, userPhoto) => {
+            if(err) return res.status(400).send(err);
+
+            let combined = []
+            users.forEach((user) => {
+                userPhoto.forEach((d, i) => {
+                    if (user._id.toString() === d.userId) {
+                        combined[i] = {
+                            photo: d.photo,
+                            _id: user._id,
+                            email: user.email,
+                            firstname: user.firstname,
+                            lastname: user.lastname,
+                            role: user.role,
+                            isActive: user.isActive,
+                            updatedAt: user.updatedAt,
+                            createdAt: user.createdAt
+                        }
+                    }
+                })
+            })
+            res.status(200).send(combined)
+        })
     })
 })
 
@@ -387,8 +412,14 @@ app.post('/api/admin/book/approve', (req, res) => {
     
     Book.findByIdAndUpdate(bookId, {isApproved: req.body.isApproved}, {new: true}, (err, data) => {
         if(err) return res.status(400).send(err);
+        if(req.body.isApproved) {
+            return res.status(200).json({
+                message: "Book approved successfully!",
+                success: true,
+            })
+        }
         res.status(200).json({
-            message: "Book approved successfully!",
+            message: "Book disapproved successfully!",
             success: true,
         })
     })

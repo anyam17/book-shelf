@@ -47,8 +47,7 @@ const Account = (props) => (
                   {props.photo ?
                     <img
                       className="rounded"
-                      /*src={require(`../../../../server/public/images/${props.photo}`).default}*/
-                      src={`/images/${props.photo}`}
+                      src={require(`../../../../server/assets/photos/${props.photo}`)}
                       alt={props.firstname}
                       width="110"
                     />
@@ -56,7 +55,7 @@ const Account = (props) => (
                     <img
                       className="rounded"
                       src={`/account.png`}
-                      alt={props.firstname}
+                      alt={"Avatar"}
                       width="110"
                     />
                   }
@@ -83,15 +82,17 @@ const Account = (props) => (
                 </CardContent>
                 <Divider />
                 <CardActions>
-                  <input type="file" className="form-control" multiple="" onChange={props.handleFile} />
-                  <Button
-                    color="primary"
-                    fullWidth
-                    variant="text"
-                    onClick={props.handleUpload}
-                  >
-                    Upload picture
-                  </Button>
+                  <form onSubmit={props.handleUpload}>
+                      <input type="file" className="form-control" multiple="" onChange={props.handleFile} />
+                      <Button
+                        type="submit"
+                        color="primary"
+                        fullWidth
+                        variant="text"
+                      >
+                        Upload picture
+                      </Button>
+                  </form>
                 </CardActions>
               </Card>
           </Grid>
@@ -101,7 +102,7 @@ const Account = (props) => (
             md={6}
             xs={12}
           > 
-            <AccountDetails {...props} />
+            <AccountDetails {...props} id={1}/>
           </Grid>
           <Grid
             item
@@ -109,7 +110,7 @@ const Account = (props) => (
             md={6}
             xs={12}
           > 
-            <AccountPassword {...props} />
+            <AccountPassword {...props} id={2}/>
           </Grid>
         </Grid>
       </Container>

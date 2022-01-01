@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import _ from "lodash";
 import {
-  Avatar,
   Box,
   Card,
   Chip,
@@ -24,7 +23,6 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import { convertFromBytesTo } from "../../utils";
-import { Document, Page } from "react-pdf";
 import Notification from "../Feedback/Notification";
 
 const AllBooks = ({
@@ -155,14 +153,6 @@ const AllBooks = ({
                             display: "flex",
                           }}
                         >
-                          <Avatar
-                            src={book.avatarUrl}
-                            style={{ marginRight: 15 }}
-                          >
-                            <Document file={`/books/${book.file}`} height={40}>
-                              <Page pageNumber={1} />
-                            </Document>
-                          </Avatar>
                           <Typography color="textPrimary" variant="body1">
                             {`${_.startCase(book.name)}`}
                           </Typography>

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import _ from "lodash";
 import {
-  Avatar,
   Box,
   Card,
   CardHeader,
@@ -22,7 +21,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
 import { convertFromBytesTo } from "../../utils";
-import { Document, Page } from "react-pdf";
 import Notification from "../Feedback/Notification";
 
 const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...rest }) => {
@@ -128,14 +126,6 @@ const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...re
                           display: "flex",
                         }}
                       >
-                        <Avatar
-                          src={book.avatarUrl}
-                          style={{ marginRight: 15 }}
-                        >
-                          <Document file={`/books/${book.file}`} height={40}>
-                            <Page pageNumber={1} />
-                          </Document>
-                        </Avatar>
                         <Typography color="textPrimary" variant="body1">
                           {`${_.startCase(book.name)}`}
                         </Typography>

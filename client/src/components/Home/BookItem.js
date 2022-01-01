@@ -49,7 +49,7 @@ const BookItem = (book) => {
       />
       <CardMedia className={classes.media} image="" title={name}>
           <Link to={{pathname: `book/${_id}`, state: book}} style={{color:"inherit", textDecoration: 'none'}}>
-          <Document file={`/books/${file}`} onLoadSuccess={onDocumentLoadSuccess} height={250}>
+          <Document file={require(`../../../../server/assets/books/${file}`)} onLoadSuccess={onDocumentLoadSuccess} height={250}>
             <Page pageNumber={1} height={250} />
           </Document>
         </Link>

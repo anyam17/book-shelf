@@ -177,8 +177,8 @@ function Navigator(props) {
                 >
                   {auth.photo ? (
                     <Avatar
-                      src={`/images/${auth.photo}`
-                        // require(`../../../../server/public/images/${auth.photo}`).default
+                      src={
+                         require(`../../../../server/assets/photos/${auth.photo}`)
                       }
                       alt="My Avatar"
                       style={{ width: 50, height: 50 }}
