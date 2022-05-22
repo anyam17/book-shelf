@@ -7,7 +7,7 @@ echo "
 "
 
 # Add nodejs 10 ppa (personal package archive) from nodesource
-curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 
 # Install nodejs and npm
 sudo apt-get install -y nodejs
