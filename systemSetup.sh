@@ -69,10 +69,10 @@ echo "
 "
 
 # Allow ssh connections through firewall
-sudo ufw allow OpenSSH
+# sudo ufw allow OpenSSH
 
 # Allow http & https through firewall
-sudo ufw allow 'Nginx Full'
+# sudo ufw allow 'Nginx Full'
 
 # Enable firewall
-sudo ufw --force enable
+# sudo ufw --force enable
