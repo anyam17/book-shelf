@@ -1,10 +1,15 @@
 const express = require('express');
+const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const fileupload = require("express-fileupload");
 const fs = require('fs');
+const AWS = require('aws-sdk');
 const mongoose = require('mongoose');
 const config = require('./config/config').get(process.env.NODE_ENV);
+
 const app = express();
+dotenv.config();
 
 /* Database Connection Setup. */
 mongoose.Promise = global.Promise;
@@ -26,7 +31,37 @@ const { auth } = require('./middleware/auth');
 /* Middleware Setup. */
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(cookieParser());
-app.use(express.static("client/build"));  // App setting for production.
+// app.use(express.static("client/build"));  // App setting for production.
+app.use(fileupload());
+app.use(express.static("files"));
+
+
+/**
+ * Initialising S3 bucket interface.
+ */
+ const s3 = new AWS.S3({
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY
+});
+
+const fileStoragePath = __dirname + "/files/";
+
+const uploadFile = async (filePath, fileName) => {
+    // Read content from the file
+    const fileContent = fs.readFileSync(filePath);
+
+    // Setting up S3 upload parameters
+    const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: fileName, // File name you want to save as in S3
+        Body: fileContent
+    };
+
+    // Uploading files to the bucket
+    return await s3.upload(params, function(err) {
+        if (err) throw err;
+    }).promise();
+};
 
 /**************************************************************/
 /***** ROUTES FOR USER AUTHENTICATION AND AUTHORISATION. ******/
@@ -221,23 +256,16 @@ app.get('/api/my_books', (req, res) => {
     })
 })
 
-app.post('/api/book', (req, res, next) => {
-    if (req.body.file) {
-        try {
-            // to declare some path to store your converted image
-            // const path = './server/public/books/' + Date.now() + '.' + req.body.type;
-            const path = './client/public/books/' + Date.now() + '.' + req.body.type;
-            const filePath = path.split("s/")[1];
-     
-            const file = req.body.file;
-     
-            // to convert base64 format into random filename
-            const base64Data = file.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-            
-            fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
+app.post('/api/book', (req, res) => {
+    const fileName = `${Date.now()}_${req.body.fileName}`;
+    const filePath = `${fileStoragePath}${fileName}`;
 
+    req.files.file.mv(filePath, (error) => {
+        if(error) res.status(500).send({message: "File upload failed!", success: false});
+
+        uploadFile(filePath, fileName).then((path) => {
             const book = new Book(req.body);
-            book["file"] = filePath;
+            book["file"] = path.Location;
 
             book.save((err, data) => {
                 if(err) return res.status(400).send(err);
@@ -248,10 +276,8 @@ app.post('/api/book', (req, res, next) => {
                     success: true
                 })
             })
-        } catch (e) {
-            next(e);
-        }
-    }
+        });
+    })
 });
 
 app.put('/api/book', (req, res) => {

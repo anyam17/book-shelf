@@ -1,0 +1,9 @@
+node_modules/
+.idea/
+
+# app data files
+config/
+files/
+
+# Env file
+.env
