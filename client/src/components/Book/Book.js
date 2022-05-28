@@ -174,7 +174,7 @@ const Book = (props) => {
                     }}
                   >
                     <Document
-                      file={`/books/${file}`}
+                      file={file}
                       onLoadSuccess={onDocumentLoadSuccess}
                     >
                       <Page pageNumber={pageNumber} />

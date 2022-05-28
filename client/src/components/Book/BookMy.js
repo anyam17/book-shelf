@@ -17,6 +17,7 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import Tooltip from '@mui/material/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -150,6 +151,7 @@ const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...re
                     </TableCell>
                     <TableCell>
                       <div>
+                      <Tooltip title="Edit Book">
                         <IconButton
                           onClick={(e) => handleEditDialog(e, book)}
                           aria-label="edit book"
@@ -157,6 +159,8 @@ const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...re
                         >
                           <EditIcon />
                         </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Book">
                         <IconButton
                           onClick={(e) => handleDialog(e, book._id, book.name)}
                           aria-label="delete book"
@@ -164,6 +168,7 @@ const BookMy = ({ books, handleDialog, handleEditDialog, message, success, ...re
                         >
                           <DeleteIcon />
                         </IconButton>
+                      </Tooltip>
                       </div>
                     </TableCell>
                   </TableRow>

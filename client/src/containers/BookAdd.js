@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { reset } from "redux-form";
 
 import BookAddComponent from "../components/Book/BookAdd";
-import { addBook } from "../actions/book";
+import { uploadBook } from "../actions/book";
 import { validateForm } from "../utils";
 
 class BookAdd extends Component {
@@ -50,7 +50,8 @@ class BookAdd extends Component {
         if (validate.isValidForm) {
             reader.onload = (e) => {
                 this.setState({
-                    file: e.target.result,
+                    // file: e.target.result,
+                    file: file,
                     size: file.size,
                     type: type,
                     fileName: fileName,
@@ -83,25 +84,23 @@ class BookAdd extends Component {
     }
 
     submitForm = (values) => {
-        const { ownerId, review, rating, file, size, type, pages, isValidForm } = this.state;
-        const { name, author, price } = values;
+        const { ownerId, review, rating, file, fileName, size, type, price, pages, isValidForm } = this.state;
+        const { name, author } = values;
 
-        if (isValidForm) {
-            this.props.dispatch(
-                addBook(
-                    name,
-                    author,
-                    ownerId,
-                    review,
-                    rating,
-                    pages,
-                    price,
-                    file,
-                    size,
-                    type
-                )
-            );
-        } 
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("fileName", fileName);
+        formData.append("author", author);
+        formData.append("ownerId", ownerId);
+        formData.append("review", review);
+        formData.append("rating", rating);
+        formData.append("pages", pages);
+        formData.append("price", price);
+        formData.append("file", file);
+        formData.append("size", size);
+        formData.append("type", type);
+
+        if (isValidForm) this.props.dispatch(uploadBook(formData));
     };
 
     // resetForm = () => this.setState(this.initialState);

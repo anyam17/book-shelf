@@ -18,37 +18,60 @@ export function getBooks(limit = 10, start = 0, order = "asc", list = "") {
     };
 }
 
-export function addBook(
-    name,
-    author,
-    ownerId,
-    review,
-    rating,
-    pages,
-    price,
-    file,
-    size,
-    type
-) {
-    const request = axios.post("/api/book", {
-        name,
-        author,
-        ownerId,
-        review,
-        rating,
-        pages,
-        price,
-        file,
-        size,
-        type,
-    });
+// export function addBook(
+//     name,
+//     author,
+//     ownerId,
+//     review,
+//     rating,
+//     pages,
+//     price,
+//     file,
+//     size,
+//     type
+// ) {
+//     const request = axios.post("/api/book", {
+//         name,
+//         author,
+//         ownerId,
+//         review,
+//         rating,
+//         pages,
+//         price,
+//         file,
+//         size,
+//         type,
+//     });
+
+//     return (dispatch) => {
+//         dispatch({ type: "ADD_BOOK_REQUEST" });
+//         request
+//             .then((res) => {
+//                 dispatch({
+//                     type: "ADD_BOOK",
+//                     payload: res.data,
+//                 });
+
+//                 setTimeout(() => {
+//                     dispatch(dismissNotification());
+//                 }, timeout);
+//             })
+//             .catch((err) => {
+//                 console.log(err);
+//             });
+//     };
+// }
+
+
+export function uploadBook(formData) {
+    const request = axios.post("/api/book", formData);
 
     return (dispatch) => {
         dispatch({ type: "ADD_BOOK_REQUEST" });
         request
             .then((res) => {
                 dispatch({
-                    type: "ADD_BOOK",
+                    type: "ADD_BOOK_SUCCESS",
                     payload: res.data,
                 });
 

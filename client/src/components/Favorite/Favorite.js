@@ -17,6 +17,7 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import Tooltip from '@mui/material/Tooltip';
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -178,7 +179,7 @@ const Favorite = ({
                         {moment(favorite.createdAt).format("DD/MM/YYYY")}
                       </TableCell>
                       <TableCell>
-                        <div>
+                        <Tooltip title="Remove from favorites">
                           <IconButton
                             onClick={(e) =>
                               handleRemoveFromFavoritesDialog(
@@ -196,7 +197,7 @@ const Favorite = ({
                           >
                             <DeleteIcon />
                           </IconButton>
-                        </div>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}
