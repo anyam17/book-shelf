@@ -23,7 +23,7 @@ export default function(state=initialState, action) {
                 isLoading: true
             }
 
-        case 'ADD_BOOK':
+        case 'ADD_BOOK_SUCCESS':
             return {
                 ...state,
                 message: action.payload.message,

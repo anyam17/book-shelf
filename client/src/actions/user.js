@@ -1,8 +1,8 @@
 import axios from "axios";
 import { dismissNotification, timeout } from "../utils";
 
-export function uploadProfilePhoto({ photoId, userId, photo, type }) {
-    const request = axios.post(`/api/profile_photo?id=${photoId}`, { userId, photo, type });
+export function uploadProfilePhoto(formData, photoId) {
+    const request = axios.post(`/api/profile_photo?id=${photoId}`, formData);
 
     return (dispatch) => {
         dispatch({ type: "USER_PROFILE_PHOTO_REQUEST" });

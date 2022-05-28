@@ -145,22 +145,16 @@ app.get('/api/profile_photo',(req, res) => {
 })
 
 app.post('/api/profile_photo', (req, res) => {
-        try {
-            // to declare some path to store your converted image
-            // const path = './server/public/images/photo_' + Date.now() + '.' + req.body.type;
-            const path = './client/public/images/photo_' + Date.now() + '.' + req.body.type;
-            const filePath = path.split("s/")[1];
-            const file = req.body.photo;
-     
-            // to convert base64 format into random filename
-            const base64Data = file.replace(/^data:([A-Za-z-+/]+);base64,/, '');
-            
-            fs.writeFileSync(path, base64Data,  {encoding: 'base64'});
+    const fileName = `photo_${Date.now()}.${req.body.type}`;
+    const filePath = `${fileStoragePath}${fileName}`;
 
-            req.body["photo"] = filePath;
+    req.files.photo.mv(filePath, (error) => {
+        if(error) res.status(500).send({message: "File upload failed!", success: false});
 
+        uploadFile(filePath, fileName).then((path) => {
+            req.body.photo = path.Location;
             // Check if it's the first time setting up a profile photo
-            if (req.query.id !== "") {
+            if (req.query.id) {
                 UserPhoto.findByIdAndUpdate(req.query.id, req.body, {new: true}, (err, data) => {
                     if(err) return res.status(400).send(err);
                     if (data) {
@@ -171,7 +165,8 @@ app.post('/api/profile_photo', (req, res) => {
                         })
                     }
                 })
-            } else {
+            } 
+            else {
                 const userPhoto = new UserPhoto(req.body);
                 userPhoto.save((err, data) => {
                     if(err) return res.json({success: false});
@@ -182,9 +177,8 @@ app.post('/api/profile_photo', (req, res) => {
                     })
                 })
             }
-        } catch (e) {
-            console.log(e);
-        }
+        });
+    });
 })
 
 app.get('/api/getReviewer',(req,res) => {

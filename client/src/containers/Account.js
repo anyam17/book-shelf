@@ -19,28 +19,24 @@ class Account extends Component {
 
     componentWillUnmount = () => this.props.dispatch(clearProfilePhoto());
 
-    // Image upload function...
-    createImage = (file) => {
-        let type = file.type.split("/")[1];
-        let reader = new FileReader();
-        reader.onload = (e) => {
-            this.setState({
-                photo: e.target.result,
-                size: file.size,
-                type: type,
-            });
-        };
-        reader.readAsDataURL(file);
-    };
-
     handleFile = (e) => {
         let files = e.target.files || e.dataTransfer.files;
         if (!files.length) return;
-        this.createImage(files[0]);
+
+        let type = files[0].type.split("/")[1];
+        this.setState({
+            photo: files[0],
+            type: type,
+        });
     };
 
     handleUpload = () => {
-        this.props.dispatch(uploadProfilePhoto(this.state));
+        const formData = new FormData();
+        formData.append("userId", this.state.userId);
+        formData.append("photo", this.state.photo);
+        formData.append("type", this.state.type);
+        
+        this.props.dispatch(uploadProfilePhoto(formData, this.state.photoId));
         this.props.dispatch(auth());
     }
 

@@ -136,9 +136,9 @@ const Users = ({ users, handleSetRole, handleSetStatus, handleDeleteDialog, mess
                         }}
                       >
                         <Avatar
-                          src={`/images/${user.photo}`}
+                          src={user.photo}
                           style={{ marginRight: 15 }}
-                        ></Avatar>
+                        />
                         <Typography color="textPrimary" variant="body1">
                           {`${_.startCase(user.firstname)} ${_.startCase(
                             user.lastname

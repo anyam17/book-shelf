@@ -48,7 +48,7 @@ const Account = (props) => (
                     <img
                       className="rounded"
                       /*src={require(`../../../../server/public/images/${props.photo}`).default}*/
-                      src={`/images/${props.photo}`}
+                      src={props.photo}
                       alt={props.firstname}
                       width="110"
                     />

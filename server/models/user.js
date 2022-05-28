@@ -73,7 +73,7 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
 // Generating token for user after successful login. <<generateToken>>
 userSchema.methods.generateToken = function(cb){
     var user = this;
-    var token = jwt.sign(user._id.toHexString(), config.SECRET); // requires a user id and our app secret password.
+    var token = jwt.sign(user._id.toHexString(), config.APP_SECRET); // requires a user id and our app secret password.
 
     user.token = token;
     user.save(function(err, user) {
@@ -87,7 +87,7 @@ userSchema.methods.generateToken = function(cb){
 userSchema.statics.findByToken = function(token, cb) {
     var user  = this;
 
-    jwt.verify(token, config.SECRET, function(err, decode) { // jwt verify method returns the id of the user if the token is correct.
+    jwt.verify(token, config.APP_SECRET, function(err, decode) { // jwt verify method returns the id of the user if the token is correct.
         user.findOne({"_id": decode, "token": token}, function(err, user) { // finding user by id and by token
             if(err) return cb(err);
             cb(null, user)
