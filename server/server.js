@@ -1,5 +1,4 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const fileupload = require("express-fileupload");
@@ -9,17 +8,6 @@ const mongoose = require('mongoose');
 const config = require('./config/config').get(process.env.NODE_ENV);
 
 const app = express();
-dotenv.config();
-
-/* Database Connection Setup. */
-mongoose.Promise = global.Promise;
-mongoose.set('useCreateIndex', true);
-mongoose.connect(config.DATABASE);
-const connection = mongoose.connection;
-
-connection.once('open', function() {
-    console.log("MongoDB database connection established successfully");
-});
 
 /* Model importations. */
 const { User } = require('./models/user');
@@ -31,20 +19,18 @@ const { auth } = require('./middleware/auth');
 /* Middleware Setup. */
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(cookieParser());
-// app.use(express.static("client/build"));  // App setting for production.
 app.use(fileupload());
 app.use(express.static("files"));
 
+const fileStoragePath = __dirname + "/files/";
 
 /**
  * Initialising S3 bucket interface.
  */
  const s3 = new AWS.S3({
-    accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY
+    accessKeyId: config.ACCESS_KEY_ID,
+    secretAccessKey: config.SECRET_ACCESS_KEY
 });
-
-const fileStoragePath = __dirname + "/files/";
 
 const uploadFile = async (filePath, fileName) => {
     // Read content from the file
@@ -52,7 +38,7 @@ const uploadFile = async (filePath, fileName) => {
 
     // Setting up S3 upload parameters
     const params = {
-        Bucket: process.env.BUCKET_NAME,
+        Bucket: config.BUCKET_NAME,
         Key: fileName, // File name you want to save as in S3
         Body: fileContent
     };
@@ -422,18 +408,16 @@ app.post('/api/admin/book/approve', (req, res) => {
 
 
 
+// Database Connection Setup. 
+mongoose.Promise = global.Promise;
 
-
-// App settings for production
-if (process.env.NODE_ENV === "production") {
-    const path = require("path");
-
-    app.get("/*", (req, res) => {
-        res.sendfile(path.resolve(__dirname, "../client", "build", "index.html"))
-    });
-}
-
-const port = process.env.PORT || 4000;
-app.listen(port, function() {
-    console.log(`Server started successfully on port: ${port}`);
-});
+/** 
+ * Mongoose v6.0.6 already sets useNewUrlParser , useUnifiedTopology , and useCreateIndex to true, 
+ * and useFindAndModify is false. So explicitely setting them is not required. */
+mongoose.connect(config.DATABASE_URL)
+  .then(() => app.listen(config.PORT, () => {
+    console.log("\n" + "* ".repeat(36));
+    console.log(`MongoDB database started sucessfully! \nServer started successfully on port: [${config.PORT}]`);
+    console.log("_ ".repeat(36));
+  }))
+  .catch((error) => console.log(error.message));
