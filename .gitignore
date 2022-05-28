@@ -1,7 +1,0 @@
-node_modules/
-.idea/
-
-# app data files
-server/public/books
-server/public/images
-/server/config/
